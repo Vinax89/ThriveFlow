@@ -89,9 +89,10 @@ export function AppSidebar() {
            <SidebarMenuItem>
               <SidebarMenuButton
                 asChild
+                isActive={pathname.startsWith('/settings')}
                 tooltip="Settings"
               >
-                <a href="#">
+                <a href="/settings/data">
                   <Settings />
                   <span>Settings</span>
                 </a>
@@ -105,7 +106,7 @@ export function AppSidebar() {
           </Avatar>
           <div className="flex flex-col overflow-hidden">
             <span className="font-medium truncate">User</span>
-            <span className="text-sm text-muted-foreground truncate">user@example.com</span>
+            <span className="text-muted-foreground truncate">user@example.com</span>
           </div>
         </div>
       </SidebarFooter>
