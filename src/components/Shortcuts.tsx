@@ -20,7 +20,11 @@ export function Shortcuts(){
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
         return;
       }
-      if (k === '?') { setOpen(o=>!o); return; }
+      if (k === '?') {
+        e.preventDefault();
+        setOpen(o=>!o);
+        return;
+      }
       seq.push(k); seq = seq.slice(-2);
       for (const b of binds) {
         if (b.keys.length === seq.length && b.keys.every((kk,i)=> kk===seq[i])) {
