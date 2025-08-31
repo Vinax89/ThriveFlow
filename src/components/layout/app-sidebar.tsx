@@ -25,7 +25,9 @@ import {
   Settings,
   AreaChart,
   ListChecks,
-  FileCog
+  FileCog,
+  Link,
+  Landmark,
 } from 'lucide-react';
 
 const menuItems = [
@@ -63,6 +65,16 @@ const menuItems = [
     href: '/review/transactions',
     label: 'Review',
     icon: ListChecks,
+  },
+  {
+    href: '/link',
+    label: 'Link Accounts',
+    icon: Link,
+  },
+  {
+    href: '/accounts',
+    label: 'Accounts',
+    icon: Landmark,
   },
 ];
 

@@ -7,6 +7,7 @@ export type Transaction = {
   type: 'income' | 'expense';
   userCategory?: string;
   aiCategory?: string;
+  account_id?: string;
 };
 
 export type Debt = {
@@ -61,4 +62,29 @@ export type Rule = {
     accountIds: string[];
   };
   action: { nurseCategory: NurseCategory };
+};
+
+export type Institution = {
+  id: string;
+  userId: string;
+  accessToken?: string;
+  cursor?: string | null;
+  status?: string;
+  createdAt?: string;
+  lastSyncAt?: string;
+};
+
+export type Account = {
+  id: string;
+  userId: string;
+  itemId: string;
+  name?: string;
+  officialName?: string;
+  mask?: string;
+  type?: string;
+  subtype?: string;
+  currency?: string;
+  currentBalance?: number;
+  availableBalance?: number;
+  lastSyncAt?: string;
 };
