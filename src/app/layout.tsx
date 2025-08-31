@@ -5,11 +5,13 @@ import { Toaster } from "@/components/ui/toaster";
 import ThemeToggle from '@/components/ThemeToggle';
 import { Shortcuts } from '@/components/Shortcuts';
 import { SyncStatus } from '@/components/SyncStatus';
+import PWAClient from './pwa-client';
 
 
 export const metadata: Metadata = {
   title: 'ThriveFlow',
   description: 'Take control of your finances and build a brighter financial future.',
+  manifest: '/manifest.json',
 };
 
 export default function RootLayout({
@@ -25,6 +27,7 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased">
+        <PWAClient />
         <nav className="p-4 flex">
           <div className="ml-auto"><ThemeToggle /></div>
         </nav>

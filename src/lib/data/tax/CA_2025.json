@@ -1,0 +1,8 @@
+{ "state": "CA", "year": 2025, "brackets": [
+  { "rate": 1,   "upTo": 10000 },
+  { "rate": 2,   "upTo": 30000 },
+  { "rate": 4,   "upTo": 60000 },
+  { "rate": 6,   "upTo": 100000 },
+  { "rate": 9,   "upTo": 200000 },
+  { "rate": 12,  "upTo": null }
+]}

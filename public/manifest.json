@@ -1,0 +1,9 @@
+{
+  "name": "ThriveFlow",
+  "short_name": "ThriveFlow",
+  "display": "standalone",
+  "start_url": "/",
+  "background_color": "#ffffff",
+  "theme_color": "#29ABE2",
+  "icons": []
+}

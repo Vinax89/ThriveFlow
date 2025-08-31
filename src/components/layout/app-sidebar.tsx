@@ -28,6 +28,7 @@ import {
   FileCog,
   Link,
   Landmark,
+  Receipt,
 } from 'lucide-react';
 
 const menuItems = [
@@ -55,6 +56,11 @@ const menuItems = [
     href: '#',
     label: 'Goals',
     icon: Target,
+  },
+  {
+    href: '/taxes',
+    label: 'Taxes',
+    icon: Receipt,
   },
   {
     href: '/rules',
