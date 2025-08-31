@@ -45,13 +45,17 @@ export default function ImportPage(){
       const hdrs = Object.keys(rows[0] || {});
       setHeaders(hdrs);
       // naive auto-map by fuzzy include
-      const find = (k: string) => hdrs.find(h => h.toLowerCase().includes(k));
-      setMap(m => ({ ...m,
-        date: find('date') || m.date,
-        amount: find('amount') || m.amount,
-        merchant: find('merchant') || find('description') || find('name') || m.merchant,
-        memo: find('memo') || m.memo
-      }));
+      const synonyms: Record<string,string[]> = {
+        date: ['date','posted','transaction date','posting date','date posted'],
+        amount: ['amount','amt','transaction amount'],
+        merchant: ['merchant','description','name','payee','narrative','details'],
+        memo: ['memo','notes','note']
+      };
+      const auto = (hint: keyof typeof synonyms) => {
+        const cand = synonyms[hint];
+        return hdrs.find(h => cand.some(s => h.toLowerCase().includes(s)));
+      }
+      setMap(m => ({ ...m, date: auto('date') || m.date, amount: auto('amount') || m.amount, merchant: auto('merchant') || m.merchant, memo: auto('memo') || m.memo }));
     }});
   }
 

@@ -34,6 +34,29 @@ export default function SplitDialog({ open, onClose, tx }:{ open:boolean; onClos
     onClose();
   }
 
+  async function createRuleFromSplit(){
+    const first = items[0]; if (!first) return;
+    const words = (tx.description || '').toLowerCase().split(/\s+/).filter(w=> w.length >= 4).slice(0,2);
+    const min = Math.abs(first.amount) - 0.05; 
+    const max = Math.abs(first.amount) + 0.05;
+    const id = crypto.randomUUID();
+    await setDoc(doc(db,'rules', id), { 
+        id, 
+        userId: tx.userId, 
+        priority: 90, 
+        enabled: true, 
+        match: { 
+            merchantContains: words, 
+            categoryEquals: [], 
+            minAmount: min, 
+            maxAmount: max, 
+            accountIds: [] 
+        }, 
+        action: { nurseCategory: first.userCategory || 'other' } 
+    });
+    alert('Rule created');
+  }
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
         <DialogContent className="max-w-2xl">
@@ -58,6 +81,7 @@ export default function SplitDialog({ open, onClose, tx }:{ open:boolean; onClos
                 </div>
             </div>
             <DialogFooter>
+                <Button variant="secondary" onClick={createRuleFromSplit}>Create rule from first split</Button>
                 <DialogClose asChild>
                     <Button variant="outline">Cancel</Button>
                 </DialogClose>

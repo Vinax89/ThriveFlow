@@ -20,6 +20,7 @@ export type Transaction = {
   splits?: TxSplit[];
   createdAt?: string;
   updatedAt?: string;
+  userId: string;
 };
 
 export type Debt = {
@@ -44,7 +45,7 @@ export type Envelope = {
   category: string;
   planned: number;
   carryover: boolean;
-  openingBalance?: number;
+  openingBalance: number;
   allowNegative?: boolean;
 };
 
@@ -149,4 +150,14 @@ export type DebtAccount = {
   balance: number;
   apr: number;
   minPayment: number;
+};
+
+export type ReviewMetricsDaily = {
+  date: string;              // YYYY-MM-DD
+  opened: number;            // new reviews that day
+  resolved: number;          // resolved that day
+  backlog: number;           // open at end of day
+  medianTTRmin: number;      // median time-to-resolution in minutes
+  p95TTRmin: number;
+  oldestOpenMin: number;     // age of oldest open review in minutes
 };

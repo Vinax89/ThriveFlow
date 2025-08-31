@@ -35,6 +35,7 @@ import {
   CalendarClock,
   Package,
   Repeat,
+  ShieldCheck,
 } from 'lucide-react';
 
 const menuItems = [
@@ -97,6 +98,11 @@ const menuItems = [
     href: '/review/transactions',
     label: 'Review',
     icon: ListChecks,
+  },
+  {
+    href: '/transactions/reconcile',
+    label: 'Reconcile',
+    icon: ShieldCheck,
   },
   {
     href: '/review/receipts',
