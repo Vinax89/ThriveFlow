@@ -24,6 +24,8 @@ import {
   Wallet,
   Settings,
   AreaChart,
+  ListChecks,
+  FileCog
 } from 'lucide-react';
 
 const menuItems = [
@@ -51,6 +53,16 @@ const menuItems = [
     href: '#',
     label: 'Goals',
     icon: Target,
+  },
+  {
+    href: '/rules',
+    label: 'Rules',
+    icon: FileCog,
+  },
+    {
+    href: '/review/transactions',
+    label: 'Review',
+    icon: ListChecks,
   },
 ];
 

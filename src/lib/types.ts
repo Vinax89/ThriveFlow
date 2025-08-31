@@ -5,6 +5,8 @@ export type Transaction = {
   amount: number;
   date: string;
   type: 'income' | 'expense';
+  userCategory?: string;
+  aiCategory?: string;
 };
 
 export type Debt = {
@@ -17,7 +19,7 @@ export type Debt = {
 };
 
 export type Goal = {
-  id: string;
+  id:string;
   name: string;
   targetAmount: number;
   currentAmount: number;
@@ -39,4 +41,24 @@ export type Budget = {
   locked: boolean;
   createdAt?: string;
   updatedAt?: string;
+};
+
+export const NURSE_CATEGORIES = [
+  'scrubs_uniforms', 'ceu_licensure', 'agency_fees', 'housing_overage', 'travel_mileage', 'travel_lodging', 'meals_on_shift', 'equipment_supplies', 'parking', 'union_dues', 'insurance', 'utilities', 'groceries', 'transportation', 'health', 'entertainment', 'income', 'other'
+] as const;
+export type NurseCategory = typeof NURSE_CATEGORIES[number];
+
+export type Rule = {
+  id: string;
+  userId: string;
+  priority: number;
+  enabled: boolean;
+  match: {
+    merchantContains: string[];
+    categoryEquals: string[];
+    minAmount?: number;
+    maxAmount?: number;
+    accountIds: string[];
+  };
+  action: { nurseCategory: NurseCategory };
 };

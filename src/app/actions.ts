@@ -33,3 +33,8 @@ export async function getCashFlowProjection(input: CashFlowProjectionInput): Pro
     return { success: false, error: 'An unexpected error occurred while generating the projection.' };
   }
 }
+
+export async function runRecategorize() {
+    console.log("Recategorizing recent transactions (mock)...");
+    return { ok: true, processed: 0 };
+}
