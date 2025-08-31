@@ -31,6 +31,9 @@ import {
   Receipt,
   UploadCloud,
   Grid3x3,
+  CalendarClock,
+  Package,
+  Repeat,
 } from 'lucide-react';
 
 const menuItems = [
@@ -50,6 +53,11 @@ const menuItems = [
     icon: Grid3x3,
   },
   {
+    href: '/upcoming',
+    label: 'Upcoming',
+    icon: CalendarClock,
+  },
+  {
     href: '/budgets',
     label: 'Budgets',
     icon: Wallet,
@@ -58,6 +66,16 @@ const menuItems = [
     href: '/debts',
     label: 'Debts',
     icon: CreditCard,
+  },
+  {
+    href: '/bnpl',
+    label: 'BNPL',
+    icon: Package,
+  },
+  {
+    href: '/obligations',
+    label: 'Obligations',
+    icon: Repeat,
   },
   {
     href: '/goals',

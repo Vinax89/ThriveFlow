@@ -105,3 +105,23 @@ export type Receipt = {
   linkedTx: string[];
   createdAt?: string;
 };
+
+export type BNPLPlan = {
+  id: string;
+  userId: string;
+  provider: string;
+  description: string;
+  total: number;
+  installments: number;
+  startDate: string; // YYYY-MM-DD
+  cadence: 'weekly' | 'biweekly' | 'monthly';
+};
+
+export type Obligation = {
+    id: string;
+    userId: string;
+    name: string;
+    amount: number;
+    cadence: 'weekly' | 'biweekly' | 'monthly' | 'quarterly' | 'yearly' | 'none';
+    nextDueDate: string; // YYYY-MM-DD
+};
