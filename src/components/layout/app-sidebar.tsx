@@ -73,6 +73,11 @@ const menuItems = [
     icon: ListChecks,
   },
   {
+    href: '/review/receipts',
+    label: 'Receipts',
+    icon: Receipt,
+  },
+  {
     href: '/link',
     label: 'Link Accounts',
     icon: Link,

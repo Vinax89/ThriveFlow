@@ -8,6 +8,7 @@ export type Transaction = {
   userCategory?: string;
   aiCategory?: string;
   account_id?: string;
+  receiptId?: string;
 };
 
 export type Debt = {
@@ -87,4 +88,20 @@ export type Account = {
   currentBalance?: number;
   availableBalance?: number;
   lastSyncAt?: string;
+};
+
+export type Receipt = {
+  id: string;
+  userId: string;
+  storagePath: string;
+  sha256: string;
+  source: 'web' | 'mobile';
+  ocr: {
+    status: 'queued' | 'parsed' | 'failed';
+    provider?: string;
+    extractedAt?: string;
+    kv?: Record<string, any>;
+  };
+  linkedTx: string[];
+  createdAt?: string;
 };
