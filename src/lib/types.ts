@@ -24,3 +24,19 @@ export type Goal = {
   imageUrl: string;
   imageHint: string;
 };
+
+export type Envelope = {
+  category: string;
+  planned: number;
+  carryover: boolean;
+};
+
+export type Budget = {
+  id: string;
+  userId: string;
+  month: string; // YYYY-MM
+  envelopes: Envelope[];
+  locked: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+};

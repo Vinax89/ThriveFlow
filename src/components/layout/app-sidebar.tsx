@@ -38,8 +38,8 @@ const menuItems = [
     icon: AreaChart,
   },
   {
-    href: '#',
-    label: 'Budget',
+    href: '/budgets',
+    label: 'Budgets',
     icon: Wallet,
   },
   {
@@ -72,7 +72,7 @@ export function AppSidebar() {
             <SidebarMenuItem key={item.label}>
               <SidebarMenuButton
                 asChild
-                isActive={pathname === item.href}
+                isActive={pathname.startsWith(item.href)}
                 tooltip={item.label}
               >
                 <a href={item.href}>
