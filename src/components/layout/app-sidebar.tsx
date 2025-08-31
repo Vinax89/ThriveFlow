@@ -23,6 +23,7 @@ import {
   Target,
   Wallet,
   Settings,
+  AreaChart,
 } from 'lucide-react';
 
 const menuItems = [
@@ -30,6 +31,11 @@ const menuItems = [
     href: '/dashboard',
     label: 'Dashboard',
     icon: LayoutDashboard,
+  },
+  {
+    href: '/reports/cashflow',
+    label: 'Cashflow',
+    icon: AreaChart,
   },
   {
     href: '#',
