@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, collection, query, where, getDocs, doc, setDoc, orderBy, limit } from 'firebase/firestore';
 import { getStorage, ref, uploadBytesResumable } from 'firebase/storage';
+import { authedFetch } from '@/lib/authFetch';
 
 function uploadReceipt(storage: any, file: File, uid: string, onProgress: (pct:number)=>void): Promise<string> {
   const yyyy = new Date().getFullYear();
@@ -16,6 +17,17 @@ function uploadReceipt(storage: any, file: File, uid: string, onProgress: (pct:n
       onProgress(Math.round((s.bytesTransferred / s.totalBytes)*100));
     }, reject, () => resolve(path));
   });
+}
+
+function Thumb({ path }:{ path:string }){
+  const [url, setUrl] = useState<string>('');
+  const auth = getAuth();
+  useEffect(()=> { (async()=>{
+    const t = await auth.currentUser?.getIdToken();
+    const r = await fetch('/api/receipts/url', { method:'POST', headers: { 'Content-Type':'application/json', Authorization: `Bearer ${t}` }, body: JSON.stringify({ path }) });
+    const j = await r.json(); setUrl(j.url);
+  })(); }, [path, auth]);
+  if (!url) return null; return <img src={url} alt="Receipt thumbnail" className="max-h-48 border rounded" />;
 }
 
 function ManualLink({ uid, receiptId, onLink }: { uid:string, receiptId:string, onLink: () => void }){
@@ -68,8 +80,8 @@ export default function ReceiptsPage(){
 
   async function refresh(){
     if(!uid || !db) return; 
-    const qs = await getDocs(query(collection(db,'receipts'), where('userId','==', uid)));
-    setRows(qs.docs.map(d => d.data()));
+    const qs = await getDocs(query(collection(db,'receipt_reviews'), where('userId','==', uid), orderBy('createdAt','desc'), limit(200)));
+    setRows(qs.docs.map(d => ({id: d.id, ...d.data()})));
   }
 
   useEffect(()=> { refresh(); }, [uid, db]);
@@ -83,24 +95,52 @@ export default function ReceiptsPage(){
       setTimeout(()=> refresh(), 1500); 
   }
 
+  async function resolveLink(receiptId: string, txId: string){ await authedFetch('/api/review/resolve', { method:'POST', body: JSON.stringify({ receiptId, txId }) }); location.reload(); }
+  async function resolveCorrect(receiptId: string){
+    const date = prompt('Correct date (YYYY-MM-DD):') || undefined;
+    const amount = Number(prompt('Correct amount (e.g., 12.34):') || '') || undefined;
+    const merchant = prompt('Correct merchant:') || undefined;
+    await authedFetch('/api/review/resolve', { method:'POST', body: JSON.stringify({ receiptId, corrected: { date, amount, merchant } }) });
+    location.reload();
+  }
+  async function resolveIgnore(receiptId: string){ await authedFetch('/api/review/resolve', { method:'POST', body: JSON.stringify({ receiptId }) }); location.reload(); }
+
+
   return (
-    <main className="p-6 space-y-6">
-      <h1 className="text-2xl font-semibold">Receipts</h1>
+    <main className="p-6 space-y-4">
+      <h1 className="text-2xl font-semibold">Receipt Review</h1>
       <input type="file" accept="image/*" onChange={e=> onFile(e.target.files?.[0])} />
       {progress>0 && <div>Upload: {progress}%</div>}
       <ul className="divide-y max-w-3xl">
         {rows.map(r => (
-          <li key={r.id} className="py-3">
+          <li key={r.id} className="py-3 space-y-2">
             <div className="flex items-center justify-between">
               <div>
-                <div className="font-medium">{r.ocr?.kv?.merchant ?? 'Unknown merchant'}</div>
-                <div className="text-sm text-gray-600">{r.ocr?.kv?.date ?? '—'} · ${r.ocr?.kv?.total ?? '—'} · status: {r.ocr?.status}</div>
+                <div className="font-medium">Receipt {r.receiptId}</div>
+                <div className="text-sm text-gray-600">reason: {r.reason}</div>
               </div>
-              <div className="text-sm">{r.linkedTx?.length ? <span className="text-green-700">Linked</span> : <span className="text-amber-700">Needs link</span>}</div>
+              <div className="text-sm text-gray-600">candidates: {r.candidates.length}</div>
             </div>
-            {!r.linkedTx?.length && uid && (
-              <ManualLink uid={uid} receiptId={r.id} onLink={refresh} />
-            )}
+             {r.receiptId && <Thumb path={`receipts_thumbs/${r.userId}/${new Date(r.createdAt).getFullYear()}/${String(new Date(r.createdAt).getMonth()+1).padStart(2,'0')}/${r.receiptId}_768.jpg`} />}
+            <div className="flex gap-2">
+              {r.candidates.map((id:string)=> <button key={id} className="border px-2 py-1 text-xs" onClick={()=> resolveLink(r.receiptId, id)}>Link {id.slice(-6)}</button>)}
+              <button className="border px-2 py-1 text-xs" onClick={()=> resolveCorrect(r.receiptId)}>Correct fields</button>
+              <button className="border px-2 py-1 text-xs" onClick={()=> resolveIgnore(r.receiptId)}>Ignore</button>
+            </div>
+            <div className="grid grid-cols-2 gap-4 mt-2">
+              <div className="text-sm">
+                <div className="font-medium">Extracted</div>
+                <dl>
+                  <dt>Amount</dt><dd>${r.corrected?.amount ?? r.kv?.amount ?? '—'}</dd>
+                  <dt>Date</dt><dd>{r.corrected?.date ?? r.kv?.date ?? '—'}</dd>
+                  <dt>Merchant</dt><dd>{r.corrected?.merchant ?? r.kv?.merchant ?? '—'}</dd>
+                </dl>
+              </div>
+              <div className="text-sm">
+                <div className="font-medium">Candidate transaction (first)</div>
+                <div className="text-gray-600">Compare visually in Transactions page; future: fetch tx fields</div>
+              </div>
+            </div>
           </li>
         ))}
       </ul>

@@ -11,6 +11,7 @@ import { Trash2, PlusCircle, Pencil, Save, XCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { runRecategorize } from '@/app/actions';
 import { type Rule, NURSE_CATEGORIES } from '@/lib/types';
+import Link from 'next/link';
 
 
 // Mock data and functions
@@ -121,7 +122,10 @@ export default function RulesPage() {
                 Automate your transaction categories.
             </p>
         </div>
-        <Button onClick={startNewRule}><PlusCircle className="mr-2"/> Add Rule</Button>
+        <div className="flex gap-2">
+            <Button onClick={startNewRule}><PlusCircle className="mr-2"/> Add Rule</Button>
+            <Button variant="secondary" asChild><Link href="/rules/suggested">Suggested Rules</Link></Button>
+        </div>
       </header>
 
       {editingRule && (

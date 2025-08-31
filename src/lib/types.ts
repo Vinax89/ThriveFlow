@@ -33,6 +33,8 @@ export type Envelope = {
   category: string;
   planned: number;
   carryover: boolean;
+  openingBalance?: number;
+  allowNegative?: boolean;
 };
 
 export type Budget = {
@@ -97,10 +99,13 @@ export type Receipt = {
   sha256: string;
   source: 'web' | 'mobile';
   ocr: {
-    status: 'queued' | 'parsed' | 'failed';
+    status: 'queued' | 'parsed' | 'needs_review' | 'failed';
     provider?: string;
+    providerVersion?: string;
     extractedAt?: string;
+    confidence?: number;
     kv?: Record<string, any>;
+    warnings?: string[];
   };
   linkedTx: string[];
   createdAt?: string;
@@ -124,4 +129,13 @@ export type Obligation = {
     amount: number;
     cadence: 'weekly' | 'biweekly' | 'monthly' | 'quarterly' | 'yearly' | 'none';
     nextDueDate: string; // YYYY-MM-DD
+};
+
+export type DebtAccount = {
+  id: string;
+  userId: string;
+  name: string;
+  balance: number;
+  apr: number;
+  minPayment: number;
 };

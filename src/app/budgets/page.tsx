@@ -6,10 +6,13 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { projectEnvelopes, type Budget, type Envelope } from '@/lib/budget';
+import { projectEnvelopes, type Budget, type Envelope, rolloverFromPrevious } from '@/lib/budget';
 import { type Transaction } from '@/lib/types';
 import { PlusCircle, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { getDoc, doc, query, collection, where, getDocs } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { Label } from '@/components/ui/label';
 
 // In a real app, this would come from a user-specific source or a comprehensive list
 const NURSE_CATS = ['Scrubs/Uniforms','CEU/Licensure','Agency Fees','Housing Overage','Travel/Mileage','Travel/Lodging','Meals on Shift','Equipment/Supplies','Parking','Union Dues','Insurance','Utilities','Groceries','Transportation','Health','Entertainment','Income','Other'];
@@ -34,9 +37,9 @@ async function getBudget(userId: string, month: string): Promise<Budget | null> 
     month,
     locked: false,
     envelopes: [
-      { category: 'Groceries', planned: 500, carryover: false },
-      { category: 'Meals on Shift', planned: 200, carryover: true },
-      { category: 'Income', planned: 5000, carryover: false },
+      { category: 'Groceries', planned: 500, carryover: false, openingBalance: 0, allowNegative: false },
+      { category: 'Meals on Shift', planned: 200, carryover: true, openingBalance: 0, allowNegative: false },
+      { category: 'Income', planned: 5000, carryover: false, openingBalance: 0, allowNegative: false },
     ],
   };
 }
@@ -59,6 +62,8 @@ export default function BudgetsPage(){
   const [envelopes, setEnvelopes] = useState<Envelope[]>([]);
   const [txs, setTxs] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [mode, setMode] = useState<'linear'|'ewma'>('linear');
+  const [alpha, setAlpha] = useState(0.35);
   const { toast } = useToast();
 
   useEffect(()=> {
@@ -87,7 +92,7 @@ export default function BudgetsPage(){
     toast({ title: 'Success', description: 'Budget saved successfully.' });
   }
 
-  function addEnvelope(){ setEnvelopes(e => [...e, { category: 'Groceries', planned: 0, carryover: false }]); }
+  function addEnvelope(){ setEnvelopes(e => [...e, { category: 'Groceries', planned: 0, carryover: false, openingBalance: 0, allowNegative: false }]); }
   function removeEnvelope(i: number){ setEnvelopes(e => e.filter((_,idx)=> idx!==i)); }
   
   const handleEnvelopeChange = (index: number, field: keyof Envelope, value: any) => {
@@ -98,7 +103,21 @@ export default function BudgetsPage(){
     );
   };
 
-  const statuses = useMemo(()=> budget ? projectEnvelopes({ ...budget, envelopes } as Budget, txs) : [], [budget, envelopes, txs]);
+  const statuses = useMemo(()=> budget ? projectEnvelopes({ ...budget, envelopes } as Budget, txs, undefined, mode, alpha) : [], [budget, envelopes, txs, mode, alpha]);
+
+  async function rollover(){
+    if (!uid) return;
+    const [y,m] = month.split('-').map(Number);
+    const prevM = new Date(y, m-2, 1).toISOString().slice(0,7);
+    // fetch prev budget + txs
+    const prevId = `${uid}_${prevM}`;
+    const prevSnap = await getDoc(doc(db,'budgets', prevId));
+    if (!prevSnap.exists()) { alert('No previous budget'); return; }
+    const prevB = prevSnap.data() as any;
+    const prevTx = await getDocs(query(collection(db,'transactions'), where('userId','==', uid), where('date','>=', prevM+'-01'), where('date','<=', prevM+'-31')));
+    const next = rolloverFromPrevious(prevB, { ...budget, envelopes } as any, prevTx.docs.map(d=> d.data() as any));
+    setEnvelopes(next.envelopes as any);
+  }
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 space-y-6">
@@ -115,15 +134,35 @@ export default function BudgetsPage(){
         <CardHeader>
              <div className="flex items-center gap-4">
                 <Input type="month" className="w-48" value={month} onChange={e=> setMonth(e.target.value)} />
+                 <div className="flex items-center gap-2">
+                    <Label>Projection</Label>
+                    <Select value={mode} onValueChange={e=> setMode(e as any)}>
+                      <SelectTrigger className='w-32'><SelectValue/></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="linear">Linear</SelectItem>
+                        <SelectItem value="ewma">EWMA</SelectItem>
+                      </SelectContent>
+                    </Select>
+                 </div>
+                {mode==='ewma' && (
+                  <div className="flex items-center gap-2">
+                    <Label>Alpha</Label>
+                    <Input className="w-24" type="number" min={0.05} max={0.9} step={0.05} value={alpha} onChange={e=> setAlpha(Number(e.target.value))} />
+                  </div>
+                )}
             </div>
         </CardHeader>
         <CardContent className="space-y-4">
-           <Button onClick={addEnvelope}><PlusCircle className="mr-2" /> Add Envelope</Button>
+           <div className='flex gap-2'>
+            <Button onClick={addEnvelope}><PlusCircle className="mr-2" /> Add Envelope</Button>
+            <Button onClick={rollover} variant="outline">Roll over from previous month</Button>
+           </div>
             <div className="overflow-x-auto">
                 <Table>
                 <TableHeader>
                     <TableRow>
                     <TableHead>Category</TableHead>
+                    <TableHead className="text-right">Opening</TableHead>
                     <TableHead className="text-right">Planned</TableHead>
                     <TableHead className="text-right">Actual</TableHead>
                     <TableHead className="text-right">Projected</TableHead>
@@ -133,7 +172,7 @@ export default function BudgetsPage(){
                 </TableHeader>
                 <TableBody>
                 {isLoading ? (
-                    <TableRow><TableCell colSpan={6} className="text-center">Loading...</TableCell></TableRow>
+                    <TableRow><TableCell colSpan={7} className="text-center">Loading...</TableCell></TableRow>
                 ) : envelopes.map((e, i) => {
                     const s = statuses.find(x => x.category === e.category);
                     return (
@@ -146,6 +185,7 @@ export default function BudgetsPage(){
                                 </SelectContent>
                             </Select>
                         </TableCell>
+                        <TableCell className="text-right">{(e.openingBalance ?? 0).toFixed(2)}</TableCell>
                         <TableCell>
                             <Input className="w-28 text-right ml-auto" type="number" value={e.planned} onChange={ev => handleEnvelopeChange(i, 'planned', Number(ev.target.value))} />
                         </TableCell>
@@ -156,7 +196,10 @@ export default function BudgetsPage(){
                             {s ? `$${s.projected.toFixed(2)}` : '—'}
                         </TableCell>
                         <TableCell className="text-center">
-                            <Checkbox checked={e.carryover} onCheckedChange={checked => handleEnvelopeChange(i, 'carryover', checked)} />
+                            <div className='flex flex-col items-center gap-1'>
+                              <Checkbox checked={e.carryover} onCheckedChange={checked => handleEnvelopeChange(i, 'carryover', Boolean(checked))} />
+                              <label className="flex items-center gap-1 text-xs"><input type="checkbox" checked={e.allowNegative ?? false} onChange={ev=> handleEnvelopeChange(i, 'allowNegative', ev.target.checked)} /> allow (-)</label>
+                            </div>
                         </TableCell>
                         <TableCell className="text-right">
                             <Button variant="ghost" size="icon" onClick={()=> removeEnvelope(i)}><Trash2 className="size-4 text-muted-foreground" /></Button>
