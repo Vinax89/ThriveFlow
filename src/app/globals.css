@@ -89,3 +89,9 @@
     @apply bg-background text-foreground font-body;
   }
 }
+
+@layer utilities {
+  .grid-cols-30 {
+    grid-template-columns: repeat(30, minmax(0, 1fr));
+  }
+}

@@ -29,6 +29,8 @@ import {
   Link,
   Landmark,
   Receipt,
+  UploadCloud,
+  Grid3x3,
 } from 'lucide-react';
 
 const menuItems = [
@@ -43,17 +45,22 @@ const menuItems = [
     icon: AreaChart,
   },
   {
+    href: '/reports/heatmap',
+    label: 'Heatmap',
+    icon: Grid3x3,
+  },
+  {
     href: '/budgets',
     label: 'Budgets',
     icon: Wallet,
   },
   {
-    href: '#',
+    href: '/debts',
     label: 'Debts',
     icon: CreditCard,
   },
   {
-    href: '#',
+    href: '/goals',
     label: 'Goals',
     icon: Target,
   },
@@ -67,7 +74,7 @@ const menuItems = [
     label: 'Rules',
     icon: FileCog,
   },
-    {
+  {
     href: '/review/transactions',
     label: 'Review',
     icon: ListChecks,
@@ -76,6 +83,11 @@ const menuItems = [
     href: '/review/receipts',
     label: 'Receipts',
     icon: Receipt,
+  },
+   {
+    href: '/transactions/import',
+    label: 'Import',
+    icon: UploadCloud,
   },
   {
     href: '/link',
