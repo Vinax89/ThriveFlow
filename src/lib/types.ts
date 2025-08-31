@@ -1,3 +1,10 @@
+export type TxSplit = {
+  amount: number;
+  category?: string;
+  userCategory?: string;
+  note?: string;
+};
+
 export type Transaction = {
   id: string;
   category: string;
@@ -9,6 +16,10 @@ export type Transaction = {
   aiCategory?: string;
   account_id?: string;
   receiptId?: string;
+  fingerprint?: string;
+  splits?: TxSplit[];
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 export type Debt = {

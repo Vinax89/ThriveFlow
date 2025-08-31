@@ -1,4 +1,5 @@
 import { Transaction, Budget, Envelope } from './types';
+import { totalsByCategorySplitAware } from './tx';
 
 export function startOfMonth(month: string): string { return month + '-01'; }
 export function endOfMonth(month: string): string {
@@ -12,13 +13,7 @@ export function daysInMonth(month: string): number {
 }
 
 export function sumByCategory(txs: Transaction[], month: string): Record<string, number> {
-  const out: Record<string, number> = {};
-  for (const t of txs) {
-    if (!t.date.startsWith(month)) continue;
-    const cat = t.userCategory || t.category || 'other';
-    out[cat] = (out[cat] ?? 0) + t.amount; // expenses negative in our model
-  }
-  return out;
+  return totalsByCategorySplitAware(txs, month);
 }
 
 export type EnvelopeStatus = {

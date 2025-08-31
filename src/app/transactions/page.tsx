@@ -6,14 +6,22 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
+import SplitDialog from './SplitDialog';
+import type { Transaction } from '@/lib/types';
 
 export default function TransactionsPage(){
   const [uid] = useState('mock-user-id');
-  const [rows, setRows] = useState<any[]>([]);
+  const [rows, setRows] = useState<Transaction[]>([]);
+  const [splitTx, setSplitTx] = useState<Transaction | null>(null);
+
+  async function fetchTransactions() {
+      if(!uid) return;
+      const { rows } = await listTransactions(uid, 500);
+      setRows(rows as Transaction[]);
+  }
 
   useEffect(()=> {
-    if(!uid) return;
-    listTransactions(uid, 500).then(r=> setRows(r.rows));
+    fetchTransactions();
   }, [uid]);
 
   return (
@@ -45,6 +53,7 @@ export default function TransactionsPage(){
                 <TableHead>Description</TableHead>
                 <TableHead>Category</TableHead>
                 <TableHead className="text-right">Amount</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
@@ -56,12 +65,22 @@ export default function TransactionsPage(){
                         <Badge variant="outline">{t.category ?? 'Uncategorized'}</Badge>
                     </TableCell>
                     <td className={`p-4 text-right font-mono ${t.amount < 0 ?'text-destructive':'text-green-600'}`}>{t.amount.toFixed(2)}</td>
+                    <TableCell className="text-right">
+                        <Button variant="outline" size="sm" onClick={() => setSplitTx(t)}>Split</Button>
+                    </TableCell>
                 </TableRow>
                 ))}
             </TableBody>
             </Table>
         </CardContent>
       </Card>
+      {splitTx && (
+        <SplitDialog 
+            open={!!splitTx}
+            onClose={() => { setSplitTx(null); fetchTransactions(); }}
+            tx={splitTx}
+        />
+      )}
     </main>
   );
 }
