@@ -73,6 +73,12 @@
     --sidebar-border: 220 40% 15%;
     --sidebar-ring: 197 76% 52%;
   }
+
+  :root[data-hc="false"]{ --hc-bg:#ffffff; --hc-fg:#111827; --hc-muted:#6b7280; --hc-border:#e5e7eb; }
+  :root[data-hc="true"]{ --hc-bg:#000; --hc-fg:#fff; --hc-muted:#d1d5db; --hc-border:#9ca3af; }
+  body{ background: var(--hc-bg); color: var(--hc-fg); }
+  .border{ border-color: var(--hc-border); }
+  .text-muted{ color: var(--hc-muted); }
 }
 
 @layer base {
