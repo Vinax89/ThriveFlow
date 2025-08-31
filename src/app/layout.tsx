@@ -1,8 +1,10 @@
 import type {Metadata} from 'next';
 import './globals.css';
+import { Toaster as SonnerToaster } from 'sonner';
 import { Toaster } from "@/components/ui/toaster";
 import ThemeToggle from '@/components/ThemeToggle';
 import { Shortcuts } from '@/components/Shortcuts';
+import { SyncStatus } from '@/components/SyncStatus';
 
 
 export const metadata: Metadata = {
@@ -28,7 +30,9 @@ export default function RootLayout({
         </nav>
         {children}
         <Toaster />
+        <SonnerToaster richColors closeButton />
         <Shortcuts />
+        <SyncStatus />
       </body>
     </html>
   );
