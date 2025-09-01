@@ -3,7 +3,6 @@ import { BudgetTracker } from '@/components/dashboard/budget-tracker';
 import { DebtManager } from '@/components/dashboard/debt-manager';
 import { GoalTracker } from '@/components/dashboard/goal-tracker';
 import { CashFlowProjection } from '@/components/dashboard/cash-flow-projection';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 
 export default function DashboardPage() {
   return (
