@@ -37,6 +37,7 @@ import {
   Repeat,
   ShieldCheck,
 } from 'lucide-react';
+import { StableLink } from '@/components/perf-kit';
 
 const menuItems = [
   {
@@ -147,10 +148,10 @@ export function AppSidebar() {
                 isActive={pathname.startsWith(item.href)}
                 tooltip={item.label}
               >
-                <a href={item.href}>
+                <StableLink initialHref={item.href} href={item.href}>
                   <item.icon />
                   <span>{item.label}</span>
-                </a>
+                </StableLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
@@ -164,10 +165,10 @@ export function AppSidebar() {
                 isActive={pathname.startsWith('/settings')}
                 tooltip="Settings"
               >
-                <a href="/settings/data">
+                <StableLink initialHref="/settings/data" href="/settings/data">
                   <Settings />
                   <span>Settings</span>
-                </a>
+                </StableLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
         </SidebarMenu>
