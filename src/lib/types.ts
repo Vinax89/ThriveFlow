@@ -34,6 +34,7 @@ export type Debt = {
 
 export type Goal = {
   id:string;
+  userId: string;
   name: string;
   targetAmount: number;
   currentAmount: number;

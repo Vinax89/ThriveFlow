@@ -1,0 +1,81 @@
+
+name: RPP Nightly Refresh & Bake
+
+on:
+  schedule:
+    # Nightly at 03:07 UTC (avoid peak hours)
+    - cron: "7 3 * * *"
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - "scripts/rpp-snapshot.mjs"
+      - "src/**"
+      - "package.json"
+      - "next.config.*"
+      - ".github/workflows/rpp-refresh-and-bake.yml"
+
+permissions:
+  contents: write  # needed if you enable the optional commit step
+
+jobs:
+  refresh-and-bake:
+    runs-on: ubuntu-latest
+
+    env:
+      # Set these in your repo:
+      # Settings → Secrets and variables → Actions
+      #   - secrets.DATA_SYNC_SECRET         (same value your API expects in x-cron-secret)
+      #   - secrets.FIREBASE_TOKEN           (optional: only if you want auto-deploy)
+      # Settings → Variables
+      #   - vars.PROD_BASE_URL               (e.g., https://thriveflow-xbtmh.web.app)
+      #   - vars.FIREBASE_PROJECT            (e.g., thriveflow-xbtmh)
+      SNAPSHOT_OUT: public/data/rpp.json
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Refresh upstream cache & write snapshot
+        # Calls your /api/rpp?refresh=1 and writes public/data/rpp.json via the script
+        run: node scripts/rpp-snapshot.mjs --refresh
+        env:
+          SNAPSHOT_BASE_URL: ${{ vars.PROD_BASE_URL }}
+          DATA_SYNC_SECRET: ${{ secrets.DATA_SYNC_SECRET }}
+
+      - name: Snapshot summary
+        run: |
+          echo "== public/data/rpp.json =="
+          (jq -r '["updatedAt: "+(.updatedAt//"n/a"),
+                   "national: "+((.national//100)|tostring),
+                   "states: "+((.byState|length)|tostring)][]' public/data/rpp.json) || cat public/data/rpp.json
+
+      # Optional: commit the updated snapshot back to the repo on the nightly run
+      - name: Commit updated snapshot (optional)
+        if: ${{ github.event_name == 'schedule' }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/data/rpp.json || true
+          git commit -m "chore(data): nightly RPP snapshot" || echo "No changes to commit"
+          git push || true
+
+      # Optional: build & deploy to Firebase Hosting
+      - name: Build
+        if: ${{ secrets.FIREBASE_TOKEN != '' }}
+        run: npm run build
+
+      - name: Deploy to Firebase Hosting (optional)
+        if: ${{ secrets.FIREBASE_TOKEN != '' }}
+        run: npx firebase deploy --only hosting -P ${{ vars.FIREBASE_PROJECT }}
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
