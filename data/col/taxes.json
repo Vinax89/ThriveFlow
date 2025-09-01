@@ -1,0 +1,18 @@
+{
+  "version": "v0.1",
+  "updatedAt": "2024-08-01T04:50:56.290Z",
+  "zips": {
+    "10001": {
+      "state": 0.0641,
+      "local": 0.0387,
+      "payroll": 0.0765,
+      "federalBracketHint": "24%"
+    },
+    "94105": {
+      "state": 0.093,
+      "local": 0,
+      "payroll": 0.0765,
+      "federalBracketHint": "32%"
+    }
+  }
+}

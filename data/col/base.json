@@ -1,0 +1,20 @@
+{
+  "version": "v0.1",
+  "updatedAt": "2024-08-01T04:50:56.290Z",
+  "zips": {
+    "10001": {
+      "cpiU": 305.12,
+      "housing": 1.33,
+      "utilities": 1.08,
+      "groceries": 1.12,
+      "transport": 1.05
+    },
+    "94105": {
+      "cpiU": 318.45,
+      "housing": 1.92,
+      "utilities": 1.15,
+      "groceries": 1.18,
+      "transport": 1.09
+    }
+  }
+}

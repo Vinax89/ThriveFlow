@@ -1,20 +1,31 @@
-import { initializeApp, getApps, cert, applicationDefault } from 'firebase-admin/app';
-import { getFirestore } from 'firebase-admin/firestore';
-import 'dotenv/config';
+/**
+ * Auto-added by apply-integrated-patch on 2024-08-01T04:50:56.289Z
+ * Safe to edit.
+ */
 
-const credential =
-  process.env.FIREBASE_SERVICE_ACCOUNT_KEY
-    ? cert(JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY))
-    : applicationDefault();
+import 'server-only';
 
+type Any = any;
+let admin: Any = null;
+let adminApp: Any = null;
 
-const apps = getApps();
-
-if (!apps.length) {
-    initializeApp({
-      credential,
-      projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-    });
+try {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  admin = require('firebase-admin');
+  adminApp = admin.apps && admin.apps.length ? admin.app() : admin.initializeApp();
+} catch (e) {
+  // firebase-admin not installed or not available in this runtime.
 }
 
-export const db = getFirestore();
+export const adminAppOrNull = adminApp || null;
+export const adminSdkOrNull = admin || null;
+
+export const db = adminApp
+  ? admin.firestore()
+  : new Proxy({}, {
+      get() {
+        throw new Error('[firebase-admin] Not configured. Install firebase-admin and set credentials for server-side Firestore usage.');
+      }
+    });
+
+export default db;
