@@ -1,7 +1,21 @@
-import type {NextConfig} from 'next';
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  reactStrictMode: true,
+
+  // Silence the Studio proxy warning during dev.
+  allowedDevOrigins: [
+    'localhost',
+    '0.0.0.0',
+    '6000-firebase-studio-1756575296916.cluster-pb4ljhlmg5hqsxnzpc56r3prxw.cloudworkstations.dev',
+    '9000-firebase-studio-1756575296916.cluster-pb4ljhlmg5hqsxnzpc56r3prxw.cloudworkstations.dev',
+  ],
+
+  async redirects() {
+    return [
+      { source: '/', destination: '/dashboard', permanent: false },
+    ];
+  },
   typescript: {
     ignoreBuildErrors: true,
   },
