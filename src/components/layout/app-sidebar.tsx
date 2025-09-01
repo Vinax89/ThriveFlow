@@ -36,6 +36,7 @@ import {
   Package,
   Repeat,
   ShieldCheck,
+  HeartPulse,
 } from 'lucide-react';
 import { StableLink } from '@/components/perf-kit';
 
@@ -127,6 +128,14 @@ const menuItems = [
   },
 ];
 
+const adminMenuItems = [
+    {
+        href: '/tools/data-health',
+        label: 'Data Health',
+        icon: HeartPulse,
+    }
+]
+
 export function AppSidebar() {
   const pathname = usePathname();
 
@@ -142,6 +151,25 @@ export function AppSidebar() {
       <SidebarContent>
         <SidebarMenu>
           {menuItems.map((item) => (
+            <SidebarMenuItem key={item.href}>
+              <SidebarMenuButton
+                asChild
+                isActive={pathname.startsWith(item.href)}
+                tooltip={item.label}
+              >
+                <StableLink initialHref={item.href} href={item.href}>
+                  <item.icon />
+                  <span>{item.label}</span>
+                </StableLink>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          ))}
+        </SidebarMenu>
+         <SidebarMenu>
+            <SidebarMenuItem>
+                <div className="p-2 text-xs font-semibold text-muted-foreground">Admin</div>
+            </SidebarMenuItem>
+          {adminMenuItems.map((item) => (
             <SidebarMenuItem key={item.href}>
               <SidebarMenuButton
                 asChild

@@ -13,7 +13,7 @@ const cfg = {
   apiKey: "AIzaSyAddvTvJAz5KcsBW3ebtWvSgFZtd7gj7oQ",
   authDomain: "thriveflow-xbtmh.firebaseapp.com",
   projectId: "thriveflow-xbtmh",
-  storageBucket: "thriveflow-xbtmh.firebasestorage.app",
+  storageBucket: "thriveflow-xbtmh.appspot.com",
   messagingSenderId: "432158874114",
   appId: "1:432158874114:web:57cad19b0afaffa014651b"
 };
