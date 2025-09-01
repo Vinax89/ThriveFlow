@@ -93,6 +93,17 @@ export function blendIndexFromAssumptions(
   return weighted
 }
 
+// Simple pub/sub for assumption changes
+const listeners = new Set<() => void>();
+export function onAssumptionsChange(callback: () => void) {
+  listeners.add(callback);
+  return () => listeners.delete(callback); // unsubscribe
+}
+function notifyListeners() {
+  listeners.forEach(cb => cb());
+}
+
+
 export default function AdvancedAssumptionsPanel() {
   const [household, setHousehold] = useState(DEFAULT_HOUSEHOLD)
   const [isOpen, setIsOpen] = useState(false)
@@ -121,6 +132,7 @@ export default function AdvancedAssumptionsPanel() {
       }
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(payload))
       alert('Saved calculator defaults.')
+      notifyListeners();
     } catch (e: any) {
       alert(`Could not save defaults: ${e.message}`)
     }

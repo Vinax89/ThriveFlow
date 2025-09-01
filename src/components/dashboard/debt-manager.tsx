@@ -7,15 +7,13 @@ import {
 } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
-import { PlusCircle } from 'lucide-react';
 import type { DebtAccount } from '@/lib/types';
 import { Badge } from '../ui/badge';
 
-const mockDebts: { id: string; name: string; totalAmount: number; amountPaid: number; interestRate: number, type: 'Credit Card' | 'Loan' | 'BNPL' }[] = [
-  { id: '1', name: 'Student Loan', totalAmount: 25000, amountPaid: 7500, interestRate: 5.5, type: 'Loan' },
-  { id: '2', name: 'Visa Gold', totalAmount: 5000, amountPaid: 1200, interestRate: 18.9, type: 'Credit Card' },
-  { id: '3', name: 'Klarna - New Laptop', totalAmount: 1500, amountPaid: 900, interestRate: 0, type: 'BNPL' },
-  { id: '4', name: 'Car Loan', totalAmount: 18000, amountPaid: 15000, interestRate: 4.2, type: 'Loan' },
+const mockDebts: (DebtAccount & { type: 'Credit Card' | 'Loan' | 'BNPL' })[] = [
+  { id: '1', name: 'Student Loan', balance: 25000, minPayment: 250, apr: 5.5, type: 'Loan', userId: 'mock-user-id' },
+  { id: '2', name: 'Visa Gold', balance: 5000, minPayment: 100, apr: 18.9, type: 'Credit Card', userId: 'mock-user-id' },
+  { id: '3', name: 'Car Loan', balance: 18000, minPayment: 350, apr: 4.2, type: 'Loan', userId: 'mock-user-id' },
 ];
 
 export function DebtManager() {
@@ -39,10 +37,10 @@ export function DebtManager() {
                 <Badge variant={debt.type === 'BNPL' ? 'secondary' : 'outline'}>{debt.type}</Badge>
               </div>
               <div className="flex justify-between items-center text-sm text-muted-foreground mb-2">
-                 <span>{`$${(debt.totalAmount - debt.amountPaid).toLocaleString()} remaining`}</span>
-                 <span className="font-mono">{`$${debt.totalAmount.toLocaleString()}`}</span>
+                 <span>{`$${(debt.balance).toLocaleString()} remaining`}</span>
+                 <span className="font-mono">{`${debt.apr.toFixed(1)}% APR`}</span>
               </div>
-              <Progress value={(debt.amountPaid / debt.totalAmount) * 100} />
+              <Progress value={(1 - (debt.balance / (debt.balance + 1000))) * 100} />
             </div>
           ))}
         </div>
