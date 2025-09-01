@@ -11,7 +11,7 @@ import { type Transaction } from '@/lib/types';
 import { PlusCircle, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { getDoc, doc, query, collection, where, getDocs } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { db } from '@/lib/firebase-client';
 import { Label } from '@/components/ui/label';
 
 // In a real app, this would come from a user-specific source or a comprehensive list
@@ -21,9 +21,9 @@ function ym(d = new Date()){ return d.toISOString().slice(0,7); }
 
 // Mock data and functions - replace with actual API calls to your backend
 const mockTransactions: Transaction[] = [
-  { id: '1', date: `${ym()}-05`, amount: -120, category: 'Groceries', description: 'Supermart', type: 'expense' },
-  { id: '2', date: `${ym()}-10`, amount: -45, category: 'Meals on Shift', description: 'Hospital Cafe', type: 'expense' },
-  { id: '3', date: `${ym()}-15`, amount: 5000, category: 'Income', description: 'Paycheck', type: 'income' },
+  { id: '1', date: `${ym()}-05`, amount: -120, category: 'Groceries', description: 'Supermart', type: 'expense', userId: 'mock-user-id' },
+  { id: '2', date: `${ym()}-10`, amount: -45, category: 'Meals on Shift', description: 'Hospital Cafe', type: 'expense', userId: 'mock-user-id' },
+  { id: '3', date: `${ym()}-15`, amount: 5000, category: 'Income', description: 'Paycheck', type: 'income', userId: 'mock-user-id' },
 ];
 
 async function getBudget(userId: string, month: string): Promise<Budget | null> {

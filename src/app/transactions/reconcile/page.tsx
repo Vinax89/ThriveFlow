@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { auth, db } from '@/lib/firebase';
+import { auth, db } from '@/lib/firebase-client';
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, getDocs, query, where, orderBy, limit } from 'firebase/firestore';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';

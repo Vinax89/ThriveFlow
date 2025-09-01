@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { onSnapshot, collection, query, limit, getFirestore } from 'firebase/firestore';
 import { getApps } from 'firebase/app';
 import { CircleDot, Wifi, WifiOff } from 'lucide-react';
+import { db } from '@/lib/firebase-client';
 
 export function SyncStatus(){
   const [online, setOnline] = useState<boolean>(true);
@@ -16,7 +17,6 @@ export function SyncStatus(){
     // Listen to any collection to detect hasPendingWrites
     // This assumes firebase has been initialized.
     if (getApps().length > 0) {
-        const db = getFirestore();
         const unsub = onSnapshot(query(collection(db, 'rules'), limit(1)), { includeMetadataChanges: true }, snap => {
             setPending(snap.metadata.hasPendingWrites);
         });

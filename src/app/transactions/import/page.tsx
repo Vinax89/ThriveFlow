@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useMemo, useState } from 'react';
 import Papa from 'papaparse';
-import { auth, db } from '@/lib/firebase';
+import { auth, db } from '@/lib/firebase-client';
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, doc, setDoc, query, where, getDocs } from 'firebase/firestore';
 import { txFingerprint } from '@/lib/tx';
