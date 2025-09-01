@@ -30,11 +30,11 @@ import type { Transaction } from '@/lib/types';
 import { Badge } from '../ui/badge';
 
 const mockTransactions: Transaction[] = [
-  { id: '1', category: 'Salary', description: 'Monthly Paycheck', amount: 4500, date: '2024-07-01', type: 'income' },
-  { id: '2', category: 'Groceries', description: 'Weekly Shopping', amount: 150.75, date: '2024-07-05', type: 'expense' },
-  { id: '3', category: 'Utilities', description: 'Electricity Bill', amount: 75.50, date: '2024-07-06', type: 'expense' },
-  { id: '4', category: 'Freelance', description: 'Project X', amount: 845, date: '2024-07-08', type: 'income' },
-  { id: '5', category: 'Rent', description: 'Apartment Rent', amount: 1200, date: '2024-07-01', type: 'expense' },
+  { id: '1', category: 'Salary', description: 'Monthly Paycheck', amount: 4500, date: '2024-07-01', type: 'income', userId: 'mock-user-id' },
+  { id: '2', category: 'Groceries', description: 'Weekly Shopping', amount: 150.75, date: '2024-07-05', type: 'expense', userId: 'mock-user-id' },
+  { id: '3', category: 'Utilities', description: 'Electricity Bill', amount: 75.50, date: '2024-07-06', type: 'expense', userId: 'mock-user-id' },
+  { id: '4', category: 'Freelance', description: 'Project X', amount: 845, date: '2024-07-08', type: 'income', userId: 'mock-user-id' },
+  { id: '5', category: 'Rent', description: 'Apartment Rent', amount: 1200, date: '2024-07-01', type: 'expense', userId: 'mock-user-id' },
 ];
 
 export function BudgetTracker() {
