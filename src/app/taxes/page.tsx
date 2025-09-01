@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { DataConfidenceBadge } from '@/hooks/useDataConfidence';
 
 export default function TaxesPage(){
   const [state, setState] = useState('CA');
@@ -39,6 +40,8 @@ export default function TaxesPage(){
           Estimate your state income tax based on different filing scenarios.
         </p>
       </header>
+      
+      <DataConfidenceBadge datasets={['cpi_zip', 'cost_of_living_zip', 'tax_zip']} className="mb-3" />
 
       <Card>
         <CardHeader>
