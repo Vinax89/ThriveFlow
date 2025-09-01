@@ -1,6 +1,12 @@
-import { initializeApp, getApps, getApp } from 'firebase/app';
+'use client';
+
+import { getApps, initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import {
+  initializeFirestore,
+  persistentLocalCache,
+  persistentMultipleTabManager,
+} from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
@@ -17,9 +23,15 @@ if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
   throw new Error('Missing Firebase environment variables. Please check your .env.local file');
 }
 
-
-const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
-
+export const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 export const auth = getAuth(app);
-export const db = getFirestore(app);
+
+// Prefer auto-detect first (usually enough):
+export const db = initializeFirestore(app, {
+  experimentalAutoDetectLongPolling: true,
+  useFetchStreams: false, // avoids fetch stream quirks behind certain proxies
+  // Optional local cache (remove if your SDK version doesn't support it):
+  localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
+});
+
 export const storage = getStorage(app);

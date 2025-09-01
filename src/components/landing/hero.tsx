@@ -7,6 +7,7 @@ export function Hero() {
         src="https://picsum.photos/1200/600"
         alt="A person reviewing their finances on a laptop."
         fill
+        sizes="100vw"
         className="object-cover"
         priority
         data-ai-hint="finance planning"
