@@ -6,7 +6,7 @@ import ThemeToggle from '@/components/ThemeToggle';
 import { Shortcuts } from '@/components/Shortcuts';
 import { SyncStatus } from '@/components/SyncStatus';
 import PWAClient from './pwa-client';
-import { PerfProvider, HeadSpeed } from '@/components/perf-kit';
+import { PerfProvider, HeadSpeed, NetworkBadge } from '@/components/perf-kit';
 
 
 export const metadata: Metadata = {
@@ -26,13 +26,16 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+        <HeadSpeed />
       </head>
       <body className="font-body antialiased">
         <PerfProvider>
-          <HeadSpeed />
           <PWAClient />
           <nav className="p-4 flex">
-            <div className="ml-auto"><ThemeToggle /></div>
+            <div className="ml-auto flex items-center gap-4">
+              <NetworkBadge />
+              <ThemeToggle />
+            </div>
           </nav>
           {children}
           <Toaster />
