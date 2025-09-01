@@ -3,12 +3,15 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   reactStrictMode: true,
 
-  // Silence the Studio proxy warning during dev.
+  // Allow Firebase Studio’s preview origin during dev
   allowedDevOrigins: [
     'localhost',
     '0.0.0.0',
+    // Seen in your logs (both Studio proxy ports you used)
     '6000-firebase-studio-1756575296916.cluster-pb4ljhlmg5hqsxnzpc56r3prxw.cloudworkstations.dev',
     '9000-firebase-studio-1756575296916.cluster-pb4ljhlmg5hqsxnzpc56r3prxw.cloudworkstations.dev',
+    // (Optional) allow any Workstations preview during dev:
+    '*.cloudworkstations.dev',
   ],
 
   async redirects() {
