@@ -6,7 +6,7 @@ import ThemeToggle from '@/components/ThemeToggle';
 import { Shortcuts } from '@/components/Shortcuts';
 import { SyncStatus } from '@/components/SyncStatus';
 import PWAClient from './pwa-client';
-import { PerfProvider, HeadSpeed, NetworkBadge } from '@/components/perf-kit';
+import { PerfProvider, HeadSpeed, NetworkBadge, ProfilerPane } from '@/components/perf-kit';
 
 
 export const metadata: Metadata = {
@@ -42,6 +42,7 @@ export default function RootLayout({
           <SonnerToaster richColors closeButton />
           <Shortcuts />
           <SyncStatus />
+          <ProfilerPane />
         </PerfProvider>
       </body>
     </html>
