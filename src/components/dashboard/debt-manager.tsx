@@ -8,10 +8,10 @@ import {
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { PlusCircle } from 'lucide-react';
-import type { Debt } from '@/lib/types';
+import type { DebtAccount } from '@/lib/types';
 import { Badge } from '../ui/badge';
 
-const mockDebts: Debt[] = [
+const mockDebts: { id: string; name: string; totalAmount: number; amountPaid: number; interestRate: number, type: 'Credit Card' | 'Loan' | 'BNPL' }[] = [
   { id: '1', name: 'Student Loan', totalAmount: 25000, amountPaid: 7500, interestRate: 5.5, type: 'Loan' },
   { id: '2', name: 'Visa Gold', totalAmount: 5000, amountPaid: 1200, interestRate: 18.9, type: 'Credit Card' },
   { id: '3', name: 'Klarna - New Laptop', totalAmount: 1500, amountPaid: 900, interestRate: 0, type: 'BNPL' },

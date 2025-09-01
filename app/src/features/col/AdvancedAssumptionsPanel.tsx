@@ -19,6 +19,80 @@ const DEFAULT_HOUSEHOLD = {
 
 const LOCAL_STORAGE_KEY = 'thriveflow_calc_prefs'
 
+// BLS Consumer Expenditure Survey weights (2022)
+// https://www.bls.gov/news.release/cesan.nr0.htm
+const DEFAULT_BUDGET = {
+  housing: 0.333,
+  transportation: 0.168,
+  food: 0.128,
+  personal_insurance_pensions: 0.124,
+  healthcare: 0.081,
+  entertainment: 0.057,
+  apparel: 0.026,
+  other: 0.083,
+}
+
+/** Reads assumptions from localStorage with safe fallbacks. */
+export function readAssumptionsSafe() {
+  let household = DEFAULT_HOUSEHOLD
+  try {
+    const stored = localStorage.getItem(LOCAL_STORAGE_KEY)
+    if (stored) {
+      const parsed = JSON.parse(stored)
+      if (parsed.v === 1 && parsed.household) {
+        household = { ...DEFAULT_HOUSEHOLD, ...parsed.household }
+      }
+    }
+  } catch {
+    //
+  }
+
+  // Adjust weights based on renter status
+  const weights = {
+    // Housing: from survey, lower if homeowner (no rent)
+    housing: household.renter ? 0.25 : 0.1,
+    // Utilities: from survey, slightly higher if homeowner
+    utilities: household.renter ? 0.04 : 0.05,
+    // Other major categories, scaled to fill remainder
+    food: 0.18,
+    transportation: 0.15,
+    taxes_effective: 0.2, // fed/state/local combined
+    other: 0.18,
+  }
+  const total = Object.values(weights).reduce((s, v) => s + v, 0)
+  // Normalize to sum to 1
+  for (const k in weights) (weights as any)[k] /= total
+
+  return { household, weights, budget: DEFAULT_BUDGET }
+}
+
+/**
+ * Weighted average of cost-of-living index components.
+ * @param rpp_state_adj RPP for state (e.g., 1.15 for 15% > avg)
+ * @param cpi_delta % YoY inflation (e.g., 0.035 for 3.5%)
+ * @param housing_zip_adj ZIP-level rent index vs metro avg
+ * @param weights Budget shares (e.g., housing: 0.33)
+ * @returns Combined cost index (e.g., 1.1 for 10% > avg)
+ */
+export function blendIndexFromAssumptions(
+  rpp_state_adj: number,
+  cpi_delta: number,
+  housing_zip_adj: number,
+  weights: ReturnType<typeof readAssumptionsSafe>['weights']
+) {
+  const effective_rpp = rpp_state_adj * (1 + cpi_delta)
+  const home = housing_zip_adj * effective_rpp
+
+  const weighted =
+    weights.housing * home +
+    weights.food * effective_rpp +
+    weights.transportation * effective_rpp +
+    weights.utilities * effective_rpp +
+    weights.other * effective_rpp
+  // Taxes are already baked into post-tax income, so not included here
+  return weighted
+}
+
 export default function AdvancedAssumptionsPanel() {
   const [household, setHousehold] = useState(DEFAULT_HOUSEHOLD)
   const [isOpen, setIsOpen] = useState(false)
