@@ -12,7 +12,7 @@ import {
   query,
   setDoc,
 } from 'firebase/firestore'
-import { db } from '@/lib/firebase-client'
+import { db } from '@/lib/firebase'
 
 // ---------- CONFIG ----------
 // Required datasets, with recommended freshness windows (days)
