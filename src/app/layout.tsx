@@ -1,5 +1,3 @@
-import dynamic from 'next/dynamic';
-import HeadSpeed from '@/components/HeadSpeed';
 import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster as SonnerToaster } from 'sonner';
@@ -8,7 +6,7 @@ import ThemeToggle from '@/components/ThemeToggle';
 import { Shortcuts } from '@/components/Shortcuts';
 import { SyncStatus } from '@/components/SyncStatus';
 import PWAClient from './pwa-client';
-import PerfKitClient from '@/components/perf-kit-client';
+import { PerfProvider, HeadSpeed } from '@/components/perf-kit';
 
 
 export const metadata: Metadata = {
@@ -31,7 +29,7 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased">
-        <PerfKitClient>
+        <PerfProvider>
           <PWAClient />
           <nav className="p-4 flex">
             <div className="ml-auto"><ThemeToggle /></div>
@@ -41,7 +39,7 @@ export default function RootLayout({
           <SonnerToaster richColors closeButton />
           <Shortcuts />
           <SyncStatus />
-        </PerfKitClient>
+        </PerfProvider>
       </body>
     </html>
   );
