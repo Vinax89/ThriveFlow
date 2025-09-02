@@ -10,7 +10,8 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "snapshot:rpp": "node scripts/rpp-snapshot.mjs"
+    "snapshot:rpp": "node scripts/rpp-snapshot.mjs",
+    "test": "playwright test"
   },
   "dependencies": {
     "@genkit-ai/googleai": "^1.14.1",
