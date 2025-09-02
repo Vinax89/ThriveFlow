@@ -12,9 +12,9 @@ import { PlusCircle } from 'lucide-react';
 import type { Goal } from '@/lib/types';
 
 const mockGoals: Goal[] = [
-  { id: '1', name: 'Dream Vacation to Bali', targetAmount: 4000, currentAmount: 2800, imageUrl: 'https://picsum.photos/600/400', imageHint: 'travel beach' },
-  { id: '2', name: 'New MacBook Pro', targetAmount: 2500, currentAmount: 1000, imageUrl: 'https://picsum.photos/600/400', imageHint: 'tech computer' },
-  { id: '3', name: 'Emergency Fund', targetAmount: 10000, currentAmount: 9500, imageUrl: 'https://picsum.photos/600/400', imageHint: 'safety security' },
+  { id: '1', userId: 'mock-user-id', name: 'Dream Vacation to Bali', targetAmount: 4000, currentAmount: 2800, imageUrl: 'https://picsum.photos/600/400', imageHint: 'travel beach' },
+  { id: '2', userId: 'mock-user-id', name: 'New MacBook Pro', targetAmount: 2500, currentAmount: 1000, imageUrl: 'https://picsum.photos/600/400', imageHint: 'tech computer' },
+  { id: '3', userId: 'mock-user-id', name: 'Emergency Fund', targetAmount: 10000, currentAmount: 9500, imageUrl: 'https://picsum.photos/600/400', imageHint: 'safety security' },
 ];
 
 export function GoalTracker() {
