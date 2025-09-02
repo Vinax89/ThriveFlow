@@ -139,14 +139,34 @@ export default function RulesPage() {
                     <Label>Merchant Contains (comma-separated)</Label>
                     <Input 
                         value={editingRule.match?.merchantContains?.join(', ')} 
-                        onChange={e => setEditingRule(f => ({...f, match: {...f?.match, merchantContains: e.target.value.split(',').map(s => s.trim())}}))}
+                        onChange={e =>
+                          setEditingRule(prev => ({
+                            ...prev!,
+                            match: {
+                              ...prev!.match!,
+                              merchantContains: e.target.value
+                                .split(',')
+                                .map(s => s.trim()),
+                            },
+                          }))
+                        }
                     />
                 </div>
                 <div className="space-y-2">
                     <Label>Provider Category Equals (comma-separated)</Label>
                     <Input 
                         value={editingRule.match?.categoryEquals?.join(', ')}
-                        onChange={e => setEditingRule(f => ({...f, match: {...f?.match, categoryEquals: e.target.value.split(',').map(s => s.trim())}}))}
+                        onChange={e =>
+                          setEditingRule(prev => ({
+                            ...prev!,
+                            match: {
+                              ...prev!.match!,
+                              categoryEquals: e.target.value
+                                .split(',')
+                                .map(s => s.trim()),
+                            },
+                          }))
+                        }
                      />
                 </div>
                  <div className="space-y-2">
